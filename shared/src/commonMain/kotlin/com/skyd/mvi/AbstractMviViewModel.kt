@@ -32,8 +32,7 @@ inline fun mviConfig(builderAction: MviConfigBuilder.() -> Unit) {
 
 @MviConfigDslMarker
 class MviConfigBuilder @PublishedApi internal constructor() {
-    @PublishedApi
-    internal var printLog: Boolean = true
+    var printLog: Boolean = true
 
     @PublishedApi
     internal fun build(): MviConfig = MviConfig(printLog = printLog)
