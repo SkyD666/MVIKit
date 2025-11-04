@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.vanniktech.mavenPublish)
 }
@@ -19,7 +20,7 @@ kotlin {
         }
     }
 
-    jvm("desktop")
+    jvm()
 
 //    listOf(
 //        iosX64(),
@@ -37,14 +38,13 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.jetbrains.lifecycle.viewmodel)
             implementation(libs.jetbrains.lifecycle.runtime.compose)
-            implementation(libs.compose.runtime)
+            implementation(compose.runtime)
             implementation(libs.kermit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-        val desktopMain by getting
-        desktopMain.dependencies {
+        jvmMain.dependencies {
         }
     }
 }
