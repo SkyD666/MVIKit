@@ -1,9 +1,8 @@
-import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.vanniktech.mavenPublish)
@@ -11,12 +10,8 @@ plugins {
 
 kotlin {
     androidTarget {
-        compilations.all {
-            compileTaskProvider.configure {
-                compilerOptions {
-                    jvmTarget.set(JvmTarget.JVM_17)
-                }
-            }
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
         }
     }
 
@@ -36,22 +31,25 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.compose.runtime)
             implementation(libs.jetbrains.lifecycle.viewmodel)
             implementation(libs.jetbrains.lifecycle.runtime.compose)
-            implementation(compose.runtime)
             implementation(libs.kermit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-        jvmMain.dependencies {
+        all {
+            with(languageSettings) {
+                optIn("kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi")
+            }
         }
     }
 }
 
 android {
     namespace = "com.skyd.mvi"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         minSdk = 24
     }
@@ -62,34 +60,34 @@ android {
 }
 
 mavenPublishing {
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+    publishToMavenCentral(automaticRelease = true)
     signAllPublications()
 
-    coordinates("io.github.skyd666", "mvi", "1.0-beta03")
+    coordinates("io.github.skyd666", "mvi", "1.0-beta04")
 
     pom {
-        name.set("Compone")
-        description.set("A Compose Multiplatform MVI Kit.")
-        inceptionYear.set("2025")
-        url.set("https://github.com/SkyD666/MVIKit")
+        name = "Compone"
+        description = "A Compose Multiplatform MVI Kit."
+        inceptionYear = "2025"
+        url = "https://github.com/SkyD666/MVIKit"
         licenses {
             license {
-                name.set("The Apache License, Version 2.0")
-                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                distribution.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                name = "The Apache License, Version 2.0"
+                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
         }
         developers {
             developer {
-                id.set("SkyD666")
-                name.set("SkyD666")
-                url.set("https://github.com/SkyD666")
+                id = "SkyD666"
+                name = "SkyD666"
+                url = "https://github.com/SkyD666"
             }
         }
         scm {
-            url.set("https://github.com/SkyD666/MVIKit")
-            connection.set("scm:git:git://github.com/SkyD666/MVIKit.git")
-            developerConnection.set("scm:git:ssh://git@github.com/SkyD666/MVIKit.git")
+            url = "https://github.com/SkyD666/MVIKit"
+            connection = "scm:git:git://github.com/SkyD666/MVIKit.git"
+            developerConnection = "scm:git:ssh://git@github.com/SkyD666/MVIKit.git"
         }
     }
 }
