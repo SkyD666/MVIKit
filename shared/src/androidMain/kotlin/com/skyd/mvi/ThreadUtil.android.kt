@@ -2,6 +2,8 @@ package com.skyd.mvi
 
 import android.os.Looper
 
-actual val isMainThread: Boolean = Looper.getMainLooper() === Looper.myLooper()
+actual val isMainThread: Boolean
+    get() = Looper.getMainLooper() === Looper.myLooper()
 
-actual val currentThreadName: String = Thread.currentThread().name
+actual val currentThreadName: String
+    get() = Thread.currentThread().name

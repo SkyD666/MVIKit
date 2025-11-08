@@ -18,7 +18,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
-import java.util.concurrent.atomic.AtomicInteger
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 import kotlin.coroutines.ContinuationInterceptor
 
@@ -63,7 +64,7 @@ abstract class AbstractMviViewModel<I : MviIntent, S : MviViewState, E : MviSing
     protected open val rawLogTag: String? = null
 
     private val log by lazy(PUBLICATION) {
-        Logger.withTag((rawLogTag ?: this::class.java.simpleName).take(MAX_TAG_LENGTH))
+        Logger.withTag((rawLogTag ?: this::class.simpleName).orEmpty().take(MAX_TAG_LENGTH))
     }
 
     private val eventChannel = Channel<E>(Channel.UNLIMITED)
@@ -129,10 +130,15 @@ abstract class AbstractMviViewModel<I : MviIntent, S : MviViewState, E : MviSing
             val self = this
 
             object : SharedFlow<T> by self {
-                val subscriberCount = AtomicInteger(0)
+                private val subscriberMutex = Mutex()
+                private var subscriberCount = 0
 
                 override suspend fun collect(collector: FlowCollector<T>): Nothing {
-                    val count = subscriberCount.getAndIncrement()
+                    val count = subscriberMutex.withLock {
+                        val c = subscriberCount
+                        subscriberCount += 1
+                        c
+                    }
 
                     self.collect {
                         log.i(">>> $subject ~ $count: $it")

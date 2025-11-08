@@ -4,8 +4,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-actual val isMainThread: Boolean =
-    (Dispatchers.Main.immediate as? CoroutineDispatcher)
+actual val isMainThread: Boolean
+    get() = (Dispatchers.Main.immediate as? CoroutineDispatcher)
         ?.isDispatchNeeded(CoroutineScope(Dispatchers.Main).coroutineContext) == false
 
-actual val currentThreadName: String = Thread.currentThread().name
+actual val currentThreadName: String get() = Thread.currentThread().name

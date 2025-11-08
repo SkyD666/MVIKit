@@ -9,7 +9,10 @@ plugins {
 }
 
 kotlin {
-    androidTarget {
+    androidLibrary {
+        namespace = "com.skyd.mvi"
+        compileSdk = 36
+        minSdk = 24
         compilerOptions {
             jvmTarget = JvmTarget.JVM_17
         }
@@ -17,16 +20,12 @@ kotlin {
 
     jvm()
 
-//    listOf(
-//        iosX64(),
-//        iosArm64(),
-//        iosSimulatorArm64()
-//    ).forEach {
-//        it.binaries.framework {
-//            baseName = "shared"
-//            isStatic = true
-//        }
-//    }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    macosX64()
+    macosArm64()
 
     sourceSets {
         commonMain.dependencies {
@@ -47,23 +46,11 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.skyd.mvi"
-    compileSdk = 36
-    defaultConfig {
-        minSdk = 24
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-}
-
 mavenPublishing {
     publishToMavenCentral(automaticRelease = true)
     signAllPublications()
 
-    coordinates("io.github.skyd666", "mvi", "1.0-beta04")
+    coordinates("io.github.skyd666", "mvi", "1.0-beta05")
 
     pom {
         name = "Compone"
